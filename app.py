@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
-import openai
+from openai import OpenAI
 
 # --- UI Config ---
-st.set_page_config(page_title="Aranet AI Assistent", layout="wide")
+st.set_page_config(page_title="Aranet AI Assistent (OpenRouter)", layout="wide")
 st.title("🌱 Aranet AI Assistent (Open Source)")
 st.caption("Stel hier je vragen over je gewichtsobservaties.")
 
@@ -13,11 +13,13 @@ if not openai_api_key:
     st.warning("Voer je OpenRouter API key in om te starten.")
     st.stop()
 
-# --- Configure OpenRouter ---
-openai.api_key = openai_api_key
-openai.api_base = "https://openrouter.ai/api/v1"
+# --- OpenRouter Client Setup ---
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url="https://openrouter.ai/api/v1"
+)
 
-# --- Data Loading ---
+# --- Load Observations ---
 @st.cache_data
 def load_data():
     df = pd.read_csv("aranet_observations.csv")
@@ -26,7 +28,7 @@ def load_data():
 observations_df = load_data()
 observations_text = "\n".join(observations_df["Observation"].tolist())
 
-# --- User Question Input ---
+# --- Vraaginvoer ---
 user_question = st.text_area("Wat wil je weten?", placeholder="Bijv. Wat is er opvallend aan sensor 4.7E op 2 april?", height=100)
 
 if st.button("🔍 Vraag AI"):
@@ -45,9 +47,8 @@ Beantwoord de volgende vraag op basis van bovenstaande observaties:
 Vraag: {user_question}
 Antwoord:
 """
-
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="mistralai/mistral-7b-instruct",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
@@ -57,4 +58,4 @@ Antwoord:
             st.markdown(answer)
 
         except Exception as e:
-            st.error(f"Er ging iets mis: {e}")
+            st.error(f"Er ging iets mis:\n\n{e}")
