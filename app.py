@@ -49,7 +49,7 @@ Antwoord:
 """
         try:
             response = client.chat.completions.create(
-                model="openchat/openchat-7b:free",  # ✅ Gratis model!
+                model="huggingfaceh4/zephyr-7b-beta:free",  # ✅ Gratis model!
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
             )
