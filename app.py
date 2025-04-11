@@ -49,7 +49,7 @@ Antwoord:
 """
         try:
             response = client.chat.completions.create(
-                model="gryphe/mythomist-7b",  # ✅ Gratis model!
+                model="openchat/openchat-7b:free",  # ✅ Gratis model!
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
             )
