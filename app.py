@@ -1,19 +1,21 @@
 import streamlit as st
 import pandas as pd
-from openai import OpenAI
+import openai
 
 # --- UI Config ---
 st.set_page_config(page_title="Aranet AI Assistent", layout="wide")
-st.title("🌱 Aranet AI Assistent")
+st.title("🌱 Aranet AI Assistent (Open Source)")
 st.caption("Stel hier je vragen over je gewichtsobservaties.")
 
 # --- API Key Input ---
-openai_api_key = st.text_input("Vul hier je OpenAI API key in", type="password")
+openai_api_key = st.text_input("Vul hier je OpenRouter API key in", type="password")
 if not openai_api_key:
-    st.warning("Voer je OpenAI API key in om te starten.")
+    st.warning("Voer je OpenRouter API key in om te starten.")
     st.stop()
 
-client = OpenAI(api_key=openai_api_key)
+# --- Configure OpenRouter ---
+openai.api_key = openai_api_key
+openai.api_base = "https://openrouter.ai/api/v1"
 
 # --- Data Loading ---
 @st.cache_data
@@ -45,8 +47,8 @@ Antwoord:
 """
 
         try:
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+            response = openai.ChatCompletion.create(
+                model="mistralai/mistral-7b-instruct",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
             )
@@ -56,4 +58,3 @@ Antwoord:
 
         except Exception as e:
             st.error(f"Er ging iets mis: {e}")
-
