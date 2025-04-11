@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import openai
+from openai import OpenAI
 
 # --- UI Config ---
 st.set_page_config(page_title="Aranet AI Assistent", layout="wide")
@@ -9,6 +9,7 @@ st.caption("Stel hier je vragen over je gewichtsobservaties.")
 
 # --- API Key ---
 openai_api_key = st.text_input("Vul hier je OpenAI API key in", type="password")
+client = OpenAI(api_key=openai_api_key)
 
 if not openai_api_key:
     st.warning("Voer je OpenAI API key in om te starten.")
@@ -44,11 +45,11 @@ Beantwoord de volgende vraag op basis van bovenstaande observaties:
 Vraag: {user_question}
 Antwoord:"""
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-        )
-        answer = response.choices[0].message.content.strip()
+       response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": prompt}],
+    temperature=0.3,
+)
+answer = response.choices[0].message.content.strip()
         st.success("✅ Antwoord van AI:")
         st.markdown(answer)
