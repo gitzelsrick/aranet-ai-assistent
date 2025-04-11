@@ -3,8 +3,8 @@ import pandas as pd
 from openai import OpenAI
 
 # --- UI Config ---
-st.set_page_config(page_title="Aranet AI Assistent (OpenRouter)", layout="wide")
-st.title("🌱 Aranet AI Assistent (Open Source)")
+st.set_page_config(page_title="Aranet AI Assistent (Open Source)", layout="wide")
+st.title("🌱 Aranet AI Assistent (OpenRouter)")
 st.caption("Stel hier je vragen over je gewichtsobservaties.")
 
 # --- API Key Input ---
@@ -49,7 +49,7 @@ Antwoord:
 """
         try:
             response = client.chat.completions.create(
-                model="mistralai/mistral-7b-instruct",
+                model="gryphe/mythomist-7b",  # ✅ Gratis model!
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
             )
@@ -59,3 +59,4 @@ Antwoord:
 
         except Exception as e:
             st.error(f"Er ging iets mis:\n\n{e}")
+
